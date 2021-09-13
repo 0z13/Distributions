@@ -98,14 +98,21 @@ impl Xorshift64 {
         }
         res
     }
-    pub fn uniform (&mut self, a:i32, b:i32) {
-        panic!()
+    pub fn normal_h(&mut self) -> f64 {
+        loop {
+            let a:f64 = 2.0 * self.uniform_rv() - 1.0;
+            let b:f64 = 2.0 * self.uniform_rv() - 1.0;
+            let c = a* a + b * b;
+            if c < 1.0 {
+                let temp:f64 =  ((-2.0)*(c.log2())/c).sqrt();
+                return a *temp;
+            }
+        }
     }
 
-    // Todo:
-    // Implement uniform, normal/polar method, gamma(?), and some of the distributions derived from gamma.
-
-
+    pub fn normal(&mut self, m:f64, q:f64) -> f64 {
+        m + q * self.normal_h() 
+    }
 }
 #[test]
 // Can we get around 50% coinflip accuracy?
